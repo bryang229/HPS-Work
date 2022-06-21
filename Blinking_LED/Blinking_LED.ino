@@ -23,7 +23,7 @@ void loop() {
     delay(3);
     if(digitalRead(BTN) == LOW){
       Serial.println("Confirmed button press");
-      interval = interval == 1000 ? 2000 : 1000;
+      interval = interval == 1000 ? 500 : 1000;
     }
   }
   blinkLight();
