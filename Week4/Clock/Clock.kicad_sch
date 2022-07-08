@@ -6708,7 +6708,7 @@
   (symbol (lib_id "HPS:TestPoint") (at 80.01 92.71 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 41fa1549-a7b3-4f2a-ad55-915c96dd6f86)
-    (property "Reference" "TP?" (id 0) (at 76.708 86.36 90))
+    (property "Reference" "TP2" (id 0) (at 76.708 86.36 90))
     (property "Value" "TestPoint" (id 1) (at 76.708 88.9 90))
     (property "Footprint" "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm" (id 2) (at 80.01 87.63 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -6940,7 +6940,7 @@
   (symbol (lib_id "HPS:HPS_Logo") (at 234.95 33.02 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 5bb8bad9-6733-440e-9263-bd10135d64ff)
-    (property "Reference" "#G?" (id 0) (at 234.95 26.1504 0)
+    (property "Reference" "#G1" (id 0) (at 234.95 26.1504 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "HPS_Logo" (id 1) (at 234.95 39.8896 0)
@@ -6957,7 +6957,7 @@
   (symbol (lib_id "HPS:TestPoint") (at 69.85 26.67 270) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 5be55864-1840-4ba0-9935-063223afd7aa)
-    (property "Reference" "TP?" (id 0) (at 74.93 25.3999 90)
+    (property "Reference" "TP1" (id 0) (at 74.93 25.3999 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "TestPoint" (id 1) (at 74.93 27.9399 90)
@@ -7193,7 +7193,7 @@
   (symbol (lib_id "HPS:TestPoint") (at 85.09 106.68 270) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 8612a2a6-32d5-4181-b693-eee795dcd550)
-    (property "Reference" "TP?" (id 0) (at 90.17 105.4099 90)
+    (property "Reference" "TP3" (id 0) (at 90.17 105.4099 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "TestPoint" (id 1) (at 90.17 107.9499 90)
@@ -7689,7 +7689,7 @@
   (symbol (lib_id "HPS:TestPoint") (at 125.73 24.13 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid bce3bea4-0469-49ec-812b-abf25e966a25)
-    (property "Reference" "TP?" (id 0) (at 128.27 19.5579 0)
+    (property "Reference" "TP4" (id 0) (at 128.27 19.5579 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "TestPoint" (id 1) (at 128.27 22.0979 0)
@@ -8284,7 +8284,7 @@
 
   (symbol_instances
     (path "/5bb8bad9-6733-440e-9263-bd10135d64ff"
-      (reference "#G?") (unit 1) (value "HPS_Logo") (footprint "")
+      (reference "#G1") (unit 1) (value "HPS_Logo") (footprint "")
     )
     (path "/fb4d5b8c-776c-40ea-804f-0ca9c5d8e8fe"
       (reference "#PWR01") (unit 1) (value "VCC") (footprint "")
@@ -8478,17 +8478,17 @@
     (path "/b0579336-c97b-45cc-a8d9-5b76c366032d"
       (reference "SW2") (unit 1) (value "Omron_B3F_SPST") (footprint "footprints:SW_SPST_Omron_B3FS-100xP")
     )
-    (path "/41fa1549-a7b3-4f2a-ad55-915c96dd6f86"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
-    )
     (path "/5be55864-1840-4ba0-9935-063223afd7aa"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
+      (reference "TP1") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
+    )
+    (path "/41fa1549-a7b3-4f2a-ad55-915c96dd6f86"
+      (reference "TP2") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
     )
     (path "/8612a2a6-32d5-4181-b693-eee795dcd550"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
+      (reference "TP3") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
     )
     (path "/bce3bea4-0469-49ec-812b-abf25e966a25"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
+      (reference "TP4") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
     )
     (path "/d1c2159c-cf17-43fd-99c0-c5e908f82a85"
       (reference "U2") (unit 1) (value "ATmega328-PU") (footprint "footprints:DIP-28_W7.62mm")
