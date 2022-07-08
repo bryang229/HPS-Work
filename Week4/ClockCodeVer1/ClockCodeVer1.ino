@@ -26,13 +26,13 @@ LedControl myDisplay(DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 #define SwitchPin 8
 
 RotaryEncoder *encoder = nullptr; //Creating a pointer for my encoder instance 
-volatile int dir;                 //Creating my direction variable which will change with interrupts
+int dir;                 //Creating my direction variable which will change with interrupts
 //-1 -> Counter Clock Wise || 0 -> Not moving || 1 -> Clock Wise ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 //Setting up Interrupt
 void checkPosition() {
   encoder->tick(); // just call tick() to check the state.
-  dir = (int)(encoder->getDirection()); //Updating the direction variable
+//  dir = (int)(encoder->getDirection()); //Updating the direction variable
 }
 
 
