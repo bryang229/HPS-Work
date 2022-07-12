@@ -25,15 +25,29 @@ LedControl myDisplay(DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 #define pinB 3
 #define SwitchPin 8
 
-RotaryEncoder *encoder = nullptr; //Creating a pointer for my encoder instance 
+RotaryEncoder *encoder = nullptr; //Creating a pointer for my encoder instance
 int dir;                 //Creating my direction variable which will change with interrupts
 //-1 -> Counter Clock Wise || 0 -> Not moving || 1 -> Clock Wise ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 //Setting up Interrupt
 void checkPosition() {
   encoder->tick(); // just call tick() to check the state.
-//  dir = (int)(encoder->getDirection()); //Updating the direction variable
+  //  dir = (int)(encoder->getDirection()); //Updating the direction variable
 }
+
+//Display variables (8x8)
+int on = 0xff;
+int off = 0x00;
+int zero[] = {0x7c, 0xfe, 0xe3, 0xb3, 0x9a, 0xfe, 0x7c, 0x0};
+int one[] = {0x80, 0x84, 0xff, 0xff, 0x80, 0x80, 0x0, 0x1};
+int two[] = {0xc4, 0xe6, 0xb3, 0x93, 0xde, 0xcc, 0x1, 0x0};
+int three[] = {0x44, 0xc6, 0x93, 0x93, 0xfe, 0x6c, 0x1, 0x1};
+int four[] = {0x30, 0x38, 0x2d, 0xa7, 0xfe, 0xff, 0xa0, 0x0};
+int five[] = {0x4e, 0xce, 0x8b, 0x8b, 0xfa, 0x73, 0x0, 0x1};
+int six[] = {0x78, 0xfc, 0x97, 0x93, 0xf2, 0x61, 0x1, 0x0};
+int seven[] = {0x6, 0x6, 0xe3, 0xf3, 0x1e, 0xf, 0x1, 0x1};
+int eight[] = {0x6c, 0xfe, 0x93, 0x93, 0xff, 0x6c, 0x0, 0x0};
+int nine[] = {0xc, 0x9e, 0x93, 0xd3, 0x7f, 0x3c, 0x0, 0x1};
 
 
 //Labels for the weeks (daysOfTheWeek has Saturday twice due to an error when generating the day of the week)
@@ -53,8 +67,16 @@ int minute = 0;
 int hour = 0;
 // bool isBinaryMode = true; //Is used for changing modes (This feature has not Been added yet)
 
+//Used for HMS formatting
+boolean isFirstTime = false;
+
 //This will be used to extract the formatted date
 char *date[2];
+
+int displayMode = 0;
+//-1: Binary Mode ||0: Hours Minutes Seconds || 1: Decimal Mode
+//Used for binary mode
+int binaryImage[] = {0, 0, 0, 0, 0, 0};
 
 
 void setup() {
@@ -95,6 +117,68 @@ void setup() {
 
   //Showing date on LCD
   showDate();
+}
+
+int setBinaryFmt() {
+  for (int i = 0; i < 6; i++) {
+    binaryImage[i] = ((seconds >> i) & 1);
+  }
+}
+
+void binaryMode() {
+  setBinaryFmt();
+  //right side first
+  myDisplay.setRow(0, 0, off);
+  myDisplay.setRow(0, 1, binaryImage[2] > 0 ? on : off);
+  myDisplay.setRow(0, 2, off);
+  myDisplay.setRow(0, 3, binaryImage[1] > 0 ? on : off);
+  myDisplay.setRow(0, 4, binaryImage[1] > 0 ? on : off);
+  myDisplay.setRow(0, 5, off);
+  myDisplay.setRow(0, 6, binaryImage[0] > 0 ? on : off);
+  myDisplay.setRow(0, 7, off);
+  delay(10);
+
+  //left side now
+  myDisplay.setRow(1, 0, off);
+  myDisplay.setRow(1, 1, binaryImage[5] > 0 ? on : off);
+  myDisplay.setRow(1, 2, off);
+  myDisplay.setRow(1, 3, binaryImage[4] > 0 ? on : off);
+  myDisplay.setRow(1, 4, binaryImage[4] > 0 ? on : off);
+  myDisplay.setRow(1, 5, off);
+  myDisplay.setRow(1, 6, binaryImage[3] > 0 ? on : off);
+  myDisplay.setRow(1, 7, off);
+
+  delay(10);
+}
+
+int getNumber(int num, int row) {
+  //  int tempNum = 0;
+  switch (num) {
+    case 0: return zero[row];
+    case 1: return one[row];
+    case 2: return two[row];
+    case 3: return three[row];
+    case 4: return four[row];
+    case 5: return five[row];
+    case 6: return six[row];
+    case 7: return seven[row];
+    case 8: return eight[row];
+    case 9: return nine[row];
+    default: return zero[0];
+  }
+}
+
+void decimalMode() {
+  int right = seconds % 10;
+  for (int j = 7; j > 0; j--)
+    myDisplay.setRow(0, j, getNumber(right, j));
+  delay(10);
+
+  int left = floor(seconds / 10);
+  for (int i = 7; i > 0; i--)
+    myDisplay.setRow(1, i, getNumber(left, i));
+  delay(10);
+
 }
 
 //Used for giving the M-S weekday
@@ -139,7 +223,7 @@ void formatDate() {
 //Shows current set date onto the LCD
 void showDate() {
   formatDate(); //Formats date
-  lcd.clear(); 
+  lcd.clear();
   for (int i = 0; i < 2; i++) {
     lcd.print(date[i]); //Prints all things from the date arr
     lcd.print(" ");
@@ -151,7 +235,7 @@ void showDate() {
 }
 
 //Shows date onto the LCD (Based off input)
-void showDate(int m, int d, int y) { 
+void showDate(int m, int d, int y) {
   char *tempDates[] = {months[m], dates[d]};
   lcd.clear();
   for (int i = 0; i < 2; i++) {
@@ -170,17 +254,17 @@ void showDate(int m, int d, int y) {
 void setDate() {
   boolean setDateMode = true; //For staying in this Menu
   char *datesMenu[] = {"Set Month", "Set Day", "Set Year", "Exit Menu"};
-  int menuLen = 3; //For knowing the end of the list 
-  int menuPos = 0; //Users Position in the list 
+  int menuLen = 3; //For knowing the end of the list
+  int menuPos = 0; //Users Position in the list
 
   lcd.clear();
   lcd.print(datesMenu[menuPos]); //Showing the users position in the menu on the LCD
 
   while (setDateMode) {
-    int tempMenuPos = menuPos; //Knowing when the user moved 
+    int tempMenuPos = menuPos; //Knowing when the user moved
     dir = (int)(encoder->getDirection()); //Getting the direction
     if (dir != 0) { //Checking for movement
-      if (dir < 0) { 
+      if (dir < 0) {
         menuPos += menuPos > 0 ? dir : menuLen; //making sure it doesn't go below 0
       } else {
         menuPos += menuPos < menuLen ? dir : -1 * menuLen; //making sure it is at max the menuLen or back to 0
@@ -197,15 +281,15 @@ void setDate() {
       delay(50);
     }
 
-    DateTime now = rtc.now();   //Checking for a change of time to display time on the 8x8 
+    DateTime now = rtc.now();   //Checking for a change of time to display time on the 8x8
     int tempS = seconds;
     seconds = int(now.second());
     if (tempS != seconds)
       updateTime();
 
-    //Checking for a button press on Rot Enc 
+    //Checking for a button press on Rot Enc
     if (checkButton()) {
-      switch (menuPos) { //Running different menus based off the user's position and deboucing 
+      switch (menuPos) { //Running different menus based off the user's position and deboucing
         //0 -> Month || 1 -> Day || 2 -> Year || 3 -> Exit (Settings Menu)
         case 0:
           setDateMode = false;
@@ -235,13 +319,13 @@ void changeMonth() {
   boolean settingMonth = true;
   int monthPos = month;           //user position
   showDate(monthPos, day, year);  //showing the date the user has selected on LCD
-  int monthLen = 13;              //Max value Important since months[13] does not exist it is for handling an exit 
+  int monthLen = 13;              //Max value Important since months[13] does not exist it is for handling an exit
   while (settingMonth) {
-    dir = (int)(encoder->getDirection());  //Getting direction 
+    dir = (int)(encoder->getDirection());  //Getting direction
     int tempMonthPos = monthPos;           //Used to make sure the user moved
     if (dir != 0) {                        //handling a Non-Zero direction
       if (dir < 0) {
-        monthPos += monthPos > 1 ? dir : monthLen;    //Making sure it's above 1
+        monthPos += monthPos > 1 ? dir : monthLen - 1;    //Making sure it's above 1
       } else {
         monthPos += monthPos < monthLen ? dir : -1 * (monthLen - 1); //making sure it's at max menuLen or back to 0
       }
@@ -283,7 +367,7 @@ void changeMonth() {
   }
 }
 
-//Similar as the change month function 
+//Similar as the change month function
 //Pretty much the above with different values of max position
 void changeDate() {
   boolean settingDay = true;
@@ -295,7 +379,7 @@ void changeDate() {
     int tempDayPos = dayPos;
     if (dir != 0) {
       if (dir < 0) {
-        dayPos += dayPos > 1 ? dir : dayLen;
+        dayPos += dayPos > 1 ? dir : dayLen - 1;
       } else {
         dayPos += dayPos < dayLen ? dir : -1 * (dayLen - 1);
       }
@@ -338,7 +422,7 @@ void changeDate() {
   }
 }
 
-//Similar to the above change functions with a small change on the exit menu 
+//Similar to the above change functions with a small change on the exit menu
 void changeYear() {
   boolean settingYear = true;
   int yearPos = year;
@@ -386,11 +470,85 @@ void changeYear() {
   }
 }
 
+void disSettings() {
+  char *menu[] = {"Hour Minutes Seconds Mode", "Decimal Mode", "Binary Mode", "Exit Menu"};
+  int menuLen = 4;
+  boolean disMode = true;
+  int disPos = 0;
+  //Lazy fix
+  lcd.clear();
+  lcd.print("Hour Minutes");
+  lcd.setCursor(0, 1);
+  lcd.print("Seconds Mode");
+  while (disMode) {
+    dir = (int)(encoder->getDirection());       //updating direction to see if Rot Enc has been turned
+    int tempDisPos = disPos;          //This is for making sure the user moved in the menu
+    if (dir != 0) {
+      if (dir < 0) {
+        disPos += disPos > 0 ? dir : menuLen;  //making sure it doesn't go below 0 and wrap around
+      } else {
+        disPos += disPos < menuLen ? dir : -1 * menuLen;  //making it wrap around if it goes over the menu len
+      }
+      if (disPos > menuLen || disPos < 0) //fixing any crazy errors
+        disPos = 0;
+      delay(25);
+    }
+
+    //Only updating LCD when movement is there
+    if (disPos != tempDisPos) {
+      if (disPos == 0) {
+        //Lazy fix
+        lcd.clear();
+        lcd.print("Hour Minutes");
+        lcd.setCursor(0, 1);
+        lcd.print("Seconds Mode");
+      }
+      else {
+        lcd.clear();
+        lcd.print(menu[disPos]);
+        tempDisPos = disPos;
+      }
+      delay(50);
+    }
+
+    //Updating 8x8 when time changes
+    DateTime now = rtc.now();
+    int tempS = seconds;
+    seconds = int(now.second());
+    if (tempS != seconds)
+      updateTime();
+
+    if (checkButton()) {
+      //Handling button press using the user position to pick a function to be ran
+      switch (disPos) {
+        case 0:
+          delay(150);
+          isFirstTime = true;
+          displayMode = 0; break;
+        case 1:
+          delay(150);
+          displayMode = 1; break;
+        case 2:
+          delay(150);
+          displayMode = -1; break;
+        case 3:
+          delay(150);
+          disMode = false; break;
+        default:
+          Serial.print("Error: ");
+          Serial.println(disPos); break;
+      }
+    }
+  }
+}
+
+
+
 //Settings Menu will show on LCD and be controlled by the Rot Enc
 void displaySettings() {
-  char *settings[] = {"Set Date", "Exit Menu"};
-  int settingLen = 1;                             //Prone to change with more features coming
-  boolean settingsMode = true;  
+  char *settings[] = {"Set Date", "Change Display Mode", "Exit Menu"};
+  int settingLen = 2;                             //Prone to change with more features coming
+  boolean settingsMode = true;
   int settingsPos = 0;                            //User position
   lcd.clear();
   lcd.print(settings[settingsPos]);               //Displaying user's postion in the menu
@@ -399,8 +557,7 @@ void displaySettings() {
     dir = (int)(encoder->getDirection());       //updating direction to see if Rot Enc has been turned
     int tempSettingsPos = settingsPos;          //This is for making sure the user moved in the menu
     if (dir != 0) {                             //checking for movement
-      Serial.println(dir);
-      if (dir < 0) {                            
+      if (dir < 0) {
         settingsPos += settingsPos > 0 ? dir : settingLen;  //making sure it doesn't go below 0 and wrap around
       } else {
         settingsPos += settingsPos < settingLen ? dir : -1 * settingLen;  //making it wrap around if it goes over the menu len
@@ -412,9 +569,18 @@ void displaySettings() {
 
     //Only updating LCD when movement is there
     if (settingsPos != tempSettingsPos) {
-      lcd.clear();
-      lcd.print(settings[settingsPos]);
-      tempSettingsPos = settingsPos;
+      if (settingsPos == 1) {
+        //another lazy fix
+        lcd.clear();
+        lcd.print("Change Display");
+        lcd.setCursor(0, 1);
+        lcd.print("Mode");
+      }
+      else {
+        lcd.clear();
+        lcd.print(settings[settingsPos]);
+        tempSettingsPos = settingsPos;
+      }
       delay(50);
     }
 
@@ -434,6 +600,10 @@ void displaySettings() {
           settingsMode = false; break;
         case 1:
           delay(150);
+          disSettings();
+          settingsMode = false; break;
+        case 2:
+          delay(150);
           showDate();
           settingsMode = false; break;
         default:
@@ -445,7 +615,7 @@ void displaySettings() {
 }
 
 //Simple function that checks for a button press and returns a bool
-//has a bit of deboucing built in but may need more when implemented 
+//has a bit of deboucing built in but may need more when implemented
 boolean checkButton() {
   int switchState = digitalRead(SwitchPin);
   if (switchState == LOW) {
@@ -459,10 +629,10 @@ boolean checkButton() {
 
 //Function to show hour on the 8x8 Display
 void showHour() {
-  int binToImgH[] = {0x00, 0x6, 0x60, 0x66}; 
+  int binToImgH[] = {0x00, 0x6, 0x60, 0x66};
   //The different states of the hour portion of the clock 00 01 10 11 in Hex (keep in mind this is for a column of a 8x8 diplsay
   //Formatted 0XX00XX0 on the 8x8
-  int index = 0; 
+  int index = 0;
   for (int i = 0; i < 2; i++) //This for loop gets the lower half of a four bit number (Hour)
     index += ((hour >> i) & 1) * pow(2, i);
   for (int i = 7; i > 4; i--) //This for loop shows it on the right 8x8
@@ -481,14 +651,14 @@ void showMinute() {
   //Different states 000  001  010  011    100   101   110   111
   //Formatted 0X0XX0X0 on 8x8
   int index = 0;
-  for (int i = 0; i < 3; i++) //This for loop gets the lower half of a six bit number (Minute) 
+  for (int i = 0; i < 3; i++) //This for loop gets the lower half of a six bit number (Minute)
     index += ((minute >> i) & 1) * pow(2, i);
   for (int i = 3; i > 1; i--) //This for loop shows the number on the right 8x8
     myDisplay.setColumn(0, i, binToImg[index]);
 
   index = 0;
 
-  for (int i = 0; i < 3; i++)//This for loop gets the upper half of a six bit number (Minute) 
+  for (int i = 0; i < 3; i++)//This for loop gets the upper half of a six bit number (Minute)
     index += ((minute >> i + 3) & 1) * pow(2, i);
 
   for (int i = 3; i > 1; i--)//This for loop shows the number on the left 8x8
@@ -501,7 +671,7 @@ void showSecond() {
   //Different states 000  001  010  011    100   101   110   111
   //Formatted 0X0XX0X0 on 8x8
   int index = 0;
-  for (int i = 0; i < 3; i++) //This for loop gets the lower half of a six bit number (Seconds) 
+  for (int i = 0; i < 3; i++) //This for loop gets the lower half of a six bit number (Seconds)
     index += ((seconds >> i) & 1) * pow(2, i);
   //Displaying the seconds (Only gets one Col/Row depending on how you loop at it)
   myDisplay.setColumn(0, 0, binToImg[index]);
@@ -516,17 +686,25 @@ void showSecond() {
 
 //This function is used for updating time but only when the time changes
 void updateTime() {
-  int tempM = minute;   //Used for checking if minute changes
-  int tempH = hour;     //Used for checking if hour changes
-  DateTime now = rtc.now();     //Getting current time
-  minute = int(now.minute());    //Getting current minute
-  hour = now.hour() < 12 ? int(now.hour()) : int(now.hour()) - 12; //Getting current time in 12 hour format
+  if (displayMode < 0)
+    binaryMode();
+  else if (displayMode == 0) {
+    int tempM = minute;   //Used for checking if minute changes
+    int tempH = hour;     //Used for checking if hour changes
+    DateTime now = rtc.now();     //Getting current time
+    minute = int(now.minute());    //Getting current minute
+    hour = now.hour() < 12 ? int(now.hour()) : int(now.hour()) - 12; //Getting current time in 12 hour format
 
-  showSecond(); //Showing second since this is only called when seconds change
-  if (tempM != minute) //Only calling showMinute when the minutes change
-    showMinute();
-  if (tempH != hour)  //Only calling showHour when the hour changes
-    showHour();
+    showSecond(); //Showing second since this is only called when seconds change
+    if (tempM != minute || isFirstTime) //Only calling showMinute when the minutes change
+      showMinute();
+    if (tempH != hour || isFirstTime){  //Only calling showHour when the hour changes
+      showHour();
+      isFirstTime = false;
+    }
+  }
+  else
+    decimalMode();
 }
 
 void loop() {
@@ -537,7 +715,7 @@ void loop() {
   if (tempS != seconds)
     updateTime();
 
-  //Checking for a button press to start menu with deboucing 
+  //Checking for a button press to start menu with deboucing
   if (checkButton()) {
     delay(150);
     displaySettings();
