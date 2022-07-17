@@ -380,7 +380,7 @@
       "idf": "",
       "netlist": "../../Clock Schema/Proto.net",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Clock.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
