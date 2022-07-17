@@ -8594,7 +8594,7 @@
   (symbol (lib_name "RotaryEncoder_Switch_1") (lib_id "HPS:RotaryEncoder_Switch") (at 92.71 95.25 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid d1f5403b-bbbd-4164-ba08-dace560dc8dc)
-    (property "Reference" "SW?" (id 0) (at 92.71 82.55 0))
+    (property "Reference" "SW1" (id 0) (at 92.71 82.55 0))
     (property "Value" "RotaryEncoder_Switch" (id 1) (at 92.71 85.09 0))
     (property "Footprint" "footprints:RotaryEncoder_TT_EN11-Switch_Vertical_H20mm_CircularMountingHoles" (id 2) (at 88.9 91.186 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -9109,11 +9109,11 @@
     (path "/883d2ddf-b4a2-4884-868f-6480fe6f8248"
       (reference "RV1") (unit 1) (value "R_POT_10K") (footprint "footprints:Potentiometer_Bourns_3386P_Vertical")
     )
+    (path "/d1f5403b-bbbd-4164-ba08-dace560dc8dc"
+      (reference "SW1") (unit 1) (value "RotaryEncoder_Switch") (footprint "footprints:RotaryEncoder_TT_EN11-Switch_Vertical_H20mm_CircularMountingHoles")
+    )
     (path "/b0579336-c97b-45cc-a8d9-5b76c366032d"
       (reference "SW2") (unit 1) (value "Omron_B3F_SPST") (footprint "footprints:SW_SPST_Omron_B3FS-100xP")
-    )
-    (path "/d1f5403b-bbbd-4164-ba08-dace560dc8dc"
-      (reference "SW?") (unit 1) (value "RotaryEncoder_Switch") (footprint "footprints:RotaryEncoder_TT_EN11-Switch_Vertical_H20mm_CircularMountingHoles")
     )
     (path "/5be55864-1840-4ba0-9935-063223afd7aa"
       (reference "TP1") (unit 1) (value "TestPoint") (footprint "footprints:TestPoint_THTPad_D2.0mm_Drill1.0mm")
