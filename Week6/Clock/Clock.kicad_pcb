@@ -2120,7 +2120,7 @@
     (fp_arc (start -0.29972 8.49884) (mid -0.153162 8.145018) (end 0.20066 7.99846) (layer "F.SilkS") (width 0.12) (tstamp 5cdebd09-c937-4a66-82c5-68e10e5dc74a))
     (fp_arc (start 63.7 8) (mid 64.053553 8.146447) (end 64.2 8.5) (layer "F.SilkS") (width 0.12) (tstamp b83df63a-26eb-4ba0-9858-352eaa70ae84))
     (fp_arc (start 0.20066 22.9997) (mid -0.153162 22.853142) (end -0.29972 22.49932) (layer "F.SilkS") (width 0.12) (tstamp c6619b15-280f-4bbe-8cb9-4702c088c862))
-    (fp_arc (start 64.20104 22.49932) (mid 64.054473 22.853115) (end 63.70066 22.9997) (layer "F.SilkS") (width 0.12) (tstamp ed9dd131-7586-4bed-9ccc-97a8e239b87c))
+    (fp_arc (start 64.20104 22.49932) (mid 64.054479 22.85315) (end 63.70066 22.9997) (layer "F.SilkS") (width 0.12) (tstamp ed9dd131-7586-4bed-9ccc-97a8e239b87c))
     (fp_line (start -8.25 -2.75) (end 72.25 -2.75) (layer "F.CrtYd") (width 0.05) (tstamp 318defca-ea93-4943-ace3-617cc5d4dffa))
     (fp_line (start -8.25 33.75) (end 72.25 33.75) (layer "F.CrtYd") (width 0.05) (tstamp dd27bff8-3c0c-415b-93cf-5d9e168b7acb))
     (fp_line (start -8.25 -2.75) (end -8.25 33.75) (layer "F.CrtYd") (width 0.05) (tstamp edde74d6-a8c4-4b24-a389-237fd2cf192b))
