@@ -636,13 +636,13 @@ void showHour() {
   for (int i = 0; i < 2; i++) //This for loop gets the lower half of a four bit number (Hour)
     index += ((hour >> i) & 1) * pow(2, i);
   for (int i = 7; i > 4; i--) //This for loop shows it on the right 8x8
-    myDisplay.setColumn(0, i, binToImgH[index =< 3.0 ? (int)index : (int)index + 1]);
+    myDisplay.setColumn(0, i, binToImgH[index <= 3.0 ? (int)index : (int)index + 1]);
 
   index = 0;
   for (int i = 0; i < 2; i++)//This for loop gets the upper half of a four bit number (Hour) and shows it on the left side of the screen
     index += ((hour >> i + 2) & 1) * pow(2, i);
   for (int i = 7; i > 4; i-- )//This for loop shows it on the left 8x8
-    myDisplay.setColumn(1, i, binToImgH[index =< 3.0 ? (int)index : (int)index + 1]);
+    myDisplay.setColumn(1, i, binToImgH[index <= 3.0 ? (int)index : (int)index + 1]);
 }
 
 //Function to show minutes on the 8x8 Display
@@ -654,7 +654,7 @@ void showMinute() {
   for (int i = 0; i < 3; i++) //This for loop gets the lower half of a six bit number (Minute)
     index += ((minute >> i) & 1) * pow(2, i);
   for (int i = 3; i > 1; i--) //This for loop shows the number on the right 8x8
-    myDisplay.setColumn(0, i, binToImg[index =< 3.0 ? (int)index : (int)index + 1]);
+    myDisplay.setColumn(0, i, binToImg[index <= 3.0 ? (int)index : (int)index + 1]);
 
   index = 0;
 
@@ -662,7 +662,7 @@ void showMinute() {
     index += ((minute >> i + 3) & 1) * pow(2, i);
 
   for (int i = 3; i > 1; i--)//This for loop shows the number on the left 8x8
-    myDisplay.setColumn(1, i, binToImg[index =< 3.0 ? (int)index : (int)index + 1]);
+    myDisplay.setColumn(1, i, binToImg[index <= 3.0 ? (int)index : (int)index + 1]);
 }
 
 //Function to show seconds on 8x8 Display
