@@ -1,4 +1,4 @@
-#include "RotaryEncoder.h"
+c  #include "RotaryEncoder.h"
 //LCD Library
 #include <LiquidCrystal.h>
 
@@ -105,10 +105,10 @@ void setup() {
     Serial.flush();
     while (1) delay(10);
   }
-  if (! rtc.isrunning()) {
+//  if (! rtc.isrunning()) {
     Serial.println("RTC is NOT running, let's set the time!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  }
+//  }
   //Setting up date for the first time and giving Date variables values
   DateTime now = rtc.now();
   year = (int)(now.year());
@@ -489,7 +489,7 @@ void disSettings() {
       } else {
         disPos += disPos < menuLen ? dir : -1 * menuLen;  //making it wrap around if it goes over the menu len
       }
-      if (disPos > menuLen || disPos < 0) //fixing any crazy errors
+      if (disPos >= menuLen || disPos < 0) //fixing any crazy errors
         disPos = 0;
       delay(25);
     }
@@ -700,7 +700,10 @@ void updateTime() {
     DateTime now = rtc.now();     //Getting current time
     minute = int(now.minute());    //Getting current minute
     hour = now.hour() < 12 ? int(now.hour()) : int(now.hour()) - 12; //Getting current time in 12 hour format
-
+    if(isFirstTime){
+      myDisplay.clearDisplay(0);
+      myDisplay.clearDisplay(1);
+    }
     showSecond(); //Showing second since this is only called when seconds change
     if (tempM != minute || isFirstTime) //Only calling showMinute when the minutes change
       showMinute();
